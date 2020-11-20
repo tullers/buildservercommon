@@ -64,23 +64,25 @@
   file: 
     state: directory
     path: downloads
-    mode: 0644
+    mode: 0775
     owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
   
 - name: download aws
   get_url: 
     url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
     #dest: downloads/awscliv2.zip
     dest: downloads/awscli-exe-linux-x86_64.zip
-    #FIX THIS PERMISSION AND OWNER NOT ROOT TODO
-    mode: 0644
+    mode: 0664
     owner: "{{ ansible_user }}" 
+    group: "{{ ansible_user }}" 
 - name: download helm
   get_url: 
     url: https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz
     dest: downloads/helm-v3.3.1-linux-amd64.tar.gz
-    mode: 0644
+    mode: 0664
     owner: "{{ ansible_user }}" 
+    group: "{{ ansible_user }}" 
 
-- name: "Copying the bashalias file"
-  copy: src=./roles/buildservercommon/files/.bashaliases dest=~/.bashaliases owner={{ ansible_user }} group=root mode=0644
+#- name: "Copying the bashalias file"
+#  copy: src=./roles/buildservercommon/files/.bashaliases dest=~/.bashaliases owner={{ ansible_user }} group=root mode=0644
