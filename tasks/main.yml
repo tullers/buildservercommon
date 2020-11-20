@@ -1,0 +1,86 @@
+---
+# tasks file for common
+### replace apt sources for a local mirror, if one exists in roles/files
+#- name: get file stat to be able to perform a check in the following task
+#  local_action: stat path=sources.list
+#  register: file
+
+#- name: copy local sources.file if it exists
+#  copy:
+#    src: sources.list
+#    dest: /etc/apt/
+#    backup: yes
+#    when: file.stat.exists
+#- vars:
+#    USERNAME: "{{ lookup('env','USER') }}"
+- name: Install gpg
+  apt:
+    pkg:
+    - gpg
+
+
+- name: download and add Docker GPG key to apt
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg 
+    state: present
+
+- name: append docker repository to sources.list (HARDCODED AS BIONIC)
+  apt_repository:
+    state: present
+    #sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+
+- name: Update repo and upgrade packages
+  apt:
+    upgrade: dist
+    update_cache: yes
+
+- name: Install Common Packages
+  apt:
+    pkg:
+    - htop
+    - ncdu
+    - vim
+    - tree
+    - unzip
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - docker-ce
+    - apt-transport-https
+    - ca-certificates
+    - software-properties-common
+
+- name: apend user to docker group
+  user:
+    #name: "{{ lookup('env','USER') }}"
+    #name: "{{ user }}" 
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: create project directory for downloads
+  file: 
+    state: directory
+    path: downloads
+    mode: 0644
+    owner: "{{ ansible_user }}"
+  
+- name: download aws
+  get_url: 
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    #dest: downloads/awscliv2.zip
+    dest: downloads/awscli-exe-linux-x86_64.zip
+    #FIX THIS PERMISSION AND OWNER NOT ROOT TODO
+    mode: 0644
+    owner: "{{ ansible_user }}" 
+- name: download helm
+  get_url: 
+    url: https://get.helm.sh/helm-v3.3.1-linux-amd64.tar.gz
+    dest: downloads/helm-v3.3.1-linux-amd64.tar.gz
+    mode: 0644
+    owner: "{{ ansible_user }}" 
+
+- name: "Copying the bashalias file"
+  copy: src=./roles/buildservercommon/files/.bashaliases dest=~/.bashaliases owner={{ ansible_user }} group=root mode=0644
