@@ -51,6 +51,7 @@
     - apt-transport-https
     - ca-certificates
     - software-properties-common
+    - jq
 
 - name: apend user to docker group
   user:
