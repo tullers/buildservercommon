@@ -69,14 +69,20 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
   
-- name: download aws
-  get_url: 
-    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-    #dest: downloads/awscliv2.zip
-    dest: ./awscli-exe-linux-x86_64.zip
-    mode: 0664
-    owner: "{{ ansible_user }}" 
-    group: "{{ ansible_user }}" 
+#- name: download aws
+#  get_url: 
+#    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+#    dest: ./awscliv2.zip
+#    mode: 0664
+#    owner: "{{ ansible_user }}" 
+#    group: "{{ ansible_user }}" 
+- name: Download and Unarchive a file AWS
+  unarchive:
+    src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: .
+    remote_src: yes
+
+
 - name: download k8s
   get_url: 
     url: https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl
@@ -93,10 +99,10 @@
 #    group: "{{ ansible_user }}" 
 
 - name: "Copying the bashalias file"
-  copy: src=./roles/buildservercommon/files/.bash_aliases dest=~/.bash_aliases owner={{ ansible_user }} group=root mode=0644
+  copy: src=./roles/buildservercommon/files/.bash_aliases dest=./.bash_aliases owner={{ ansible_user }} group=root mode=0644
 
 - name: "Copy post install bash script of useful thingsa"
-  copy: src=./roles/buildservercommon/files/postinstall.sh dest=~/postinstall.sh owner={{ ansible_user }} group=root mode=0744
+  copy: src=./roles/buildservercommon/files/postinstall.sh dest=./postinstall.sh owner={{ ansible_user }} group=root mode=0744
   
 
 
@@ -107,3 +113,13 @@
 #  community.general.docker_image:
 #    name: rancher/rancher:v2.4.5
 #    source: pull
+
+# APPEND BASHRC
+- name: append kubectl shortcuts and completion to bashrc file.  
+  blockinfile:
+    path: .bashrc
+    block: |
+      #ANSIBLE Shortcuts and completion
+      source <(kubectl completion bash)
+      complete -F __start_kubectl k
+
