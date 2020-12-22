@@ -1,0 +1,9 @@
+alias k='kubectl'
+alias kgpa='kubectl get pod -o wide -A'
+alias uelog="k logs  -c axsvc deployment/amf1-uemgr"
+alias uelogtail="uelog -f --tail=0 | jq .message"
+alias n2log="k logs  -c axsvc deployment/amf1-n2mgr"
+alias sctplog="k logs -c axsvc deployment/amf1-sctpmgr-0"
+alias smlog="k logs -c axsvc deployment/smf1-smfsm"
+alias smlogtail="smlog -f --tail=0 | jq .message"
+alias nrfquery=$BASE/tools/nrf_query.sh
