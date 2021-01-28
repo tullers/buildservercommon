@@ -1,9 +1,11 @@
 alias k='kubectl'
 alias kgpa='kubectl get pod -o wide -A'
 alias uelog="k logs  -c axsvc deployment/amf1-uemgr"
-alias uelogtail="uelog -f --tail=0 | jq .message"
+alias uelogtail='uelog -f --tail=0 | jq -R "fromjson? | .message"'
 alias n2log="k logs  -c axsvc deployment/amf1-n2mgr"
 alias sctplog="k logs -c axsvc deployment/amf1-sctpmgr-0"
 alias smlog="k logs -c axsvc deployment/smf1-smfsm"
 alias smlogtail="smlog -f --tail=0 | jq .message"
-alias nrfquery=$BASE/tools/nrf_query.sh
+alias n4log='k logs -c axsvc deployment/smf1-n4'
+#alias nrfquery='~/casa-5gc/install_v5.2.0/tools/nrf_query.sh'
+alias nrfquery='k get nfregistrations.mgmt.casa.io $(kubectl get nfregistrations.mgmt.casa.io | awk {"print $2"}|xargs -n 1)'

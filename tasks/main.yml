@@ -115,6 +115,9 @@
 - name: "Copy post install bash script of useful thingsa"
   copy: src=./roles/buildservercommon/files/postinstall-buildserver.sh dest=./postinstall-buildserver.sh owner={{ ansible_user }} group=root mode=0744
 
+- name: "Copy sim registration script"
+  copy: src=./roles/buildservercommon/files/simreg.sh dest=./simreg.sh owner={{ ansible_user }} group=root mode=0744
+
 
 
 #docker pull
@@ -134,3 +137,4 @@
       complete -F __start_kubectl k
       export BASE='/home/ubuntu/casa-5gc/install_v5.2.0'
       export KUBECONFIG='/home/ubuntu/.kube/config'
+      source <(helm completion bash)
